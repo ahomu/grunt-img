@@ -79,6 +79,18 @@ grunt.initConfig({
 });
 ```
 
+## jpegrescan option
+
+If you want to use jpegrescan. [jpegrescan](http://pastebin.com/f78dbc4bc "[Perl] Dark Shikari - Pastebin.com") Script that will further compress the JPEG images that are written by Loren Merritt.
+
+Please specify the path to the jpegrescan.
+
+```js
+grunt.initConfig({
+    jpegtran:
+      rescan: './jpegrescan'
+});
+```
 
 ## License
 
