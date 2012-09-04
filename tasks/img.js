@@ -1,7 +1,10 @@
 
 var fs = require('fs'),
     path = require('path'),
-    which = require('which');
+    which = require('which'),
+    exec = require('exec');
+
+var existsSync = fs.existsSync || path.existsSync;
 
 var win32 = process.platform === 'win32';
 
@@ -45,6 +48,12 @@ module.exports = function(grunt) {
 
         grunt.helper('optipng', pngfiles, pngConfig, dest, function(err) {
             if(err) grunt.log.error(err);
+
+            // If optipng create .bak files.
+            grunt.file.expandFiles(dest+'/**/*.bak').forEach(function(file) {
+                // remove .bak file
+                fs.unlinkSync(file);
+            });
 
             grunt.helper('jpegtran', jpgfiles, jpgConfig, dest, function(err) {
                 if(err) grunt.log.error(err);
@@ -94,7 +103,6 @@ module.exports = function(grunt) {
                 if(!file) return cb();
 
                 grunt.log.subhead('** Processing: ' + file);
-
                 var jpegtran = grunt.utils.spawn({
                     cmd: cmdpath,
                     args: opts.args.concat(file)
@@ -118,14 +126,29 @@ module.exports = function(grunt) {
 
                 jpegtran.on('exit', function(code) {
                     if(code) return grunt.warn('jpgtran exited unexpectedly with exit code ' + code + '.', code);
-                    // output some size info about the file
-                    grunt.helper('min_max_stat', 'jpgtmp.jpg', file);
+
                     // copy the temporary optimized jpg to original file
                     fs.createReadStream('jpgtmp.jpg')
                         .pipe(fs.createWriteStream(outputPath)).on('close', function() {
                             grunt.helper('clear_temp_file', 'jpgtmp.jpg', function() {
+
+                            // rescan jpeg
+                            if (grunt.file.exists(opts.rescan)) {
+                                exec([opts.rescan, outputPath, outputPath], function(err, out, code) {
+                                    if (err) {
+                                        grunt.log.error(err);
+                                    } else {
+                                        grunt.log.writeln(out);
+                                    }
+                                    // output some size info about the file
+                                    grunt.helper('min_max_stat', outputPath, file);
+                                    run(files.shift());
+                                });
+                            } else {
+                                grunt.helper('min_max_stat', outputPath, file);
                                 run(files.shift());
-                            });
+                            }
+                        });
                     });
                 });
             }(files.shift()));
