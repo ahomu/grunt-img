@@ -26,9 +26,11 @@
     "url": "git://github.com/heldr/grunt-img.git"
   },
   "dependencies": {
-    "grunt": "~0.3.11",
     "which": "~1.0.5",
     "exec": "0.0.4"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.15",
   },
   "engines": {
     "node": ">=0.6.0"
