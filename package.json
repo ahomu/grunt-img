@@ -30,7 +30,7 @@
     "exec": "0.0.4"
   },
   "devDependencies": {
-    "grunt": "~0.3.15",
+    "grunt": "~0.3.15"
   },
   "engines": {
     "node": ">=0.6.0"
