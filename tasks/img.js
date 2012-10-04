@@ -1,4 +1,3 @@
-
 var fs = require('fs'),
     path = require('path'),
     which = require('which'),
@@ -11,7 +10,7 @@ var win32 = process.platform === 'win32';
 module.exports = function(grunt) {
 
     var png = ['.png', '.bmp', '.gif', '.pnm', '.tiff'],
-        jpegs = ['.jpg', 'jpeg'];
+        jpegs = ['.jpg', '.jpeg'];
 
     var optipng_helper = function(files, opts, output, cb) {
         opts = opts || {};
