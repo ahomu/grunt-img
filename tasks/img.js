@@ -83,7 +83,7 @@ module.exports = function(grunt) {
                             clear_temp_file_helper('jpgtmp.jpg', function() {
 
                             // rescan jpeg
-                            if (grunt.file.exists(opts.rescan)) {
+                            if (fs.existsSync(opts.rescan)) {
                                 exec([opts.rescan, outputPath, outputPath], function(err, out, code) {
                                     if (err) {
                                         grunt.log.error(err);
