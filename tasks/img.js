@@ -30,7 +30,7 @@ module.exports = function(grunt) {
                 args.push('-dir', output, '-clobber');
             }
 
-            var optipng = grunt.utils.spawn({
+            var optipng = grunt.util.spawn({
                 cmd: cmdpath,
                 args: args
             }, function() {});
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 if(!file) return cb();
 
                 grunt.log.subhead('** Processing: ' + file);
-                var jpegtran = grunt.utils.spawn({
+                var jpegtran = grunt.util.spawn({
                     cmd: cmdpath,
                     args: opts.args.concat(file)
                 }, function() {});
@@ -106,7 +106,7 @@ module.exports = function(grunt) {
     };
 
     var clear_temp_file_helper = function(tempFile, callback) {
-        grunt.utils.spawn({
+        grunt.util.spawn({
             cmd:'rm',
             args:['-rf',tempFile]
         }, callback);
@@ -146,14 +146,14 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('img', 'Optimizes .png/.jpg images using optipng/jpegtran', function() {
         var cb = this.async(),
-            source = this.file.src,
-            dest = this.file.dest,
+            source = this.data.src,
+            dest = this.data.dest,
             files = [],
             pngConfig = grunt.config('optipng'),
             jpgConfig = grunt.config('jpegtran'),
             recursive =  grunt.config('recursive') || true;
 
-        if( grunt.utils.kindOf( source ) === 'string' && path.extname( source ).length === 0 && recursive ) {
+        if( grunt.util.kindOf( source ) === 'string' && path.extname( source ).length === 0 && recursive ) {
             var filesList = [];
             grunt.file.recurse(source,function(abspath){
                 if(abspath){
@@ -162,7 +162,7 @@ module.exports = function(grunt) {
             });
             files = filesList;
         } else {
-            files = grunt.file.expandFiles(source);
+            files = grunt.file.expand(source);
         }
 
         var pngfiles = files.filter(function(file) {
@@ -181,7 +181,7 @@ module.exports = function(grunt) {
             if(err) grunt.log.error(err);
 
             // If optipng create .bak files.
-            grunt.file.expandFiles(dest+'/**/*.bak').forEach(function(file) {
+            grunt.file.expand(dest+'/**/*.bak').forEach(function(file) {
                 // remove .bak file
                 fs.unlinkSync(file);
             });
